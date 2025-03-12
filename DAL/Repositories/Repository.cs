@@ -1,4 +1,5 @@
-﻿using DAL.Interfaces;
+﻿using DAL.DBContext;
+using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
@@ -8,7 +9,7 @@ namespace DAL.Repositories
         private DbSet<T> _dbSet;
         private DbContext _context;
 
-        public Repository(DbContext context)
+        public Repository(ApplicationDBContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();
@@ -17,13 +18,16 @@ namespace DAL.Repositories
         public void Create(T item)
         {
             _dbSet.Add(item);
-            _context.SaveChanges();
+        }
+
+        public void Update(T item)
+        {
+            _dbSet.Update(item);
         }
 
         public void Delete(T item)
         {
             _dbSet.Remove(item);
-            _context.SaveChanges();
         }
 
         public T? Find(Func<T, bool> predicate)
@@ -44,12 +48,6 @@ namespace DAL.Repositories
         public T? GetById(int id)
         {
             return _dbSet.Find(id);
-        }
-
-        public void Update(T item)
-        {
-            _dbSet.Update(item);
-            _context.SaveChanges();
         }
     }
 }

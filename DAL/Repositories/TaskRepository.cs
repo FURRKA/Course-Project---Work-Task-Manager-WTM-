@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
-    internal class UserRepository : Repository<User>
+    internal class TaskRepository : Repository<WorkTask>
     {
-        public UserRepository(ApplicationDBContext context) : base(context)
+        public TaskRepository(ApplicationDBContext context) : base(context)
         {
         }
     }

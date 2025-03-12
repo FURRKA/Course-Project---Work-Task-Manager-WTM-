@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
-    internal class UserRepository : Repository<User>
+    internal class CommentRepository : Repository<Comment>
     {
-        public UserRepository(ApplicationDBContext context) : base(context)
+        public CommentRepository(ApplicationDBContext context) : base(context)
         {
         }
     }
