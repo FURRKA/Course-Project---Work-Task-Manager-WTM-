@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
-    public abstract class Repository<T> : IRepository<T> where T : class, IEntity, new()
+    internal abstract class Repository<T> : IRepository<T> where T : class, IEntity, new()
     {
         private DbSet<T> _dbSet;
         private DbContext _context;

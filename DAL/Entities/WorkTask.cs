@@ -11,7 +11,6 @@ namespace DAL.Entities
         public DateTime Date { get; set; } = DateTime.Now;
         public Status Status { get; set; } = Status.Waiting;
 
-
         public ICollection<User>? Users { get; set; } = new List<User>();
         public ICollection<Project> Projects { get; set; } = new List<Project>();
         public ICollection<Comment>? Comments { get; set; } = new List<Comment>();
