@@ -9,5 +9,12 @@ namespace DAL.Entities
 
         public ICollection<Project>? Projects { get; set; } = new List<Project>();
         public ICollection<WorkTask>? Tasks { get; set; } = new List<WorkTask>();
+        public Tag() { }
+
+        public Tag (int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
     }
 }

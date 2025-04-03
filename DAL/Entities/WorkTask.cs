@@ -15,5 +15,15 @@ namespace DAL.Entities
         public ICollection<Project> Projects { get; set; } = new List<Project>();
         public ICollection<Comment>? Comments { get; set; } = new List<Comment>();
         public ICollection<Tag>? Tags { get; set; } = new List<Tag>();
+
+        public WorkTask() { }
+
+        public WorkTask(int id, string title, string description, string autor)
+        {
+            Id = id;
+            Title = title;
+            Description = description;
+            Autor = autor;
+        }
     }
 }
