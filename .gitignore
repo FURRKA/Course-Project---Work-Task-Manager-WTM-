@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /TEST/TEST.csproj
 /TEST/Program.cs
 /TEST/App.config
+/DAL/DBContext/ApplicationDBContextFactory.cs
