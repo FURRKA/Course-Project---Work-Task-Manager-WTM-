@@ -1,11 +1,10 @@
 ﻿using DAL.Interfaces;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.AspNetCore.Identity;
 
 namespace DAL.Entities
 {
-    public class User : IEntity
+    public class User : IdentityUser
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public ICollection<Project>? Projects { get; set; } = new List<Project>();
         public ICollection<WorkTask>? Tasks { get; set; } = new List<WorkTask>();
@@ -15,9 +14,8 @@ namespace DAL.Entities
         public Company Company { get; set; }
 
         public User() { }
-        public User(int id, string name)
+        public User(string name)
         {
-            Id = id;
             Name = name;
         }
     }

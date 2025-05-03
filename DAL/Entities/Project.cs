@@ -6,7 +6,7 @@ namespace DAL.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public ICollection<UserProperty>? Users { get; set; } = new List<UserProperty>();
+        public ICollection<User>? Users { get; set; } = new List<User>();
         public int CompanyId { get; set; }
         public Company Company { get; set; }
         public ICollection<WorkTask>? Tasks { get; set; } = new List<WorkTask>();

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
-    internal abstract class Repository<T> : IRepository<T> where T : class, IEntity, new()
+    internal abstract class Repository<T> : IRepository<T> where T : class, new()
     {
         private DbSet<T> _dbSet;
         private DbContext _context;
@@ -18,16 +18,19 @@ namespace DAL.Repositories
         public void Create(T item)
         {
             _dbSet.Add(item);
+            _context.SaveChanges();
         }
 
         public void Update(T item)
         {
             _dbSet.Update(item);
+            _context.SaveChanges();
         }
 
         public void Delete(T item)
         {
             _dbSet.Remove(item);
+            _context.SaveChanges();
         }
 
         public T? Find(Func<T, bool> predicate)
