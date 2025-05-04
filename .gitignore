@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /TEST/Program.cs
 /TEST/App.config
 /DAL/DBContext/ApplicationDBContextFactory.cs
+/ProjectManager/appsettings.json
