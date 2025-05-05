@@ -10,8 +10,8 @@ namespace DAL.Entities
         public ICollection<WorkTask>? Tasks { get; set; } = new List<WorkTask>();
         public ICollection<Comment>? Comments {  get; set; } = new List<Comment>();
 
-        public int CompanyId { get; set; }
-        public Company Company { get; set; }
+        public int? CompanyId { get; set; }
+        public Company? Company { get; set; }
 
         public User() { }
         public User(string name)
