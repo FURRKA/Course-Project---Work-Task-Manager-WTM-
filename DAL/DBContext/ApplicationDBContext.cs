@@ -1,10 +1,11 @@
 ﻿using DAL.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.DBContext
 {
-    public class ApplicationDBContext : IdentityDbContext<User>
+    public class ApplicationDBContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public DbSet<WorkTask> Tasks { get; set; }
         public DbSet<Tag> Tags { get; set; }

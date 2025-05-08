@@ -3,6 +3,9 @@ using DAL.DBContext;
 using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using DAL.Interfaces;
+using BLL.Interfaces;
+using BLL.DTO;
 
 namespace ProjectManager
 {
@@ -19,7 +22,7 @@ namespace ProjectManager
             builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseNpgsql(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddIdentity<User, IdentityRole>(options =>
+            builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
             {
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
@@ -57,7 +60,7 @@ namespace ProjectManager
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Project}/{action=Index}/{id?}");
             app.MapRazorPages();
 
             app.Run();
