@@ -1,5 +1,9 @@
-﻿using BLL.Profiles;
+﻿using BLL.DTO;
+using BLL.Interfaces;
+using BLL.Profiles;
+using BLL.Services;
 using DAL;
+using DAL.Entities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BLL
@@ -10,6 +14,10 @@ namespace BLL
         {
             service.ConfigreDAL(connectionString);
             service.AddAutoMapper(typeof(MappingProfile));
+            service.AddTransient<IService<Project, ProjectDTO>, ProjectService>();
+            service.AddTransient<IService<WorkTask, TaskDTO>, TaskService>(); 
+            service.AddTransient<IService<Company, CompanyDTO>, CompanyService>(); 
+            service.AddTransient<IService<Tag, TagDTO>, TagService>(); 
         }
     }
 }

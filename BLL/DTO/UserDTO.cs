@@ -2,9 +2,8 @@
 
 namespace BLL.DTO
 {
-    internal class UserDTO : IDTO
+    public class UserDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Role { get; set; }
         public List<ProjectDTO> Projects { get; set; }
