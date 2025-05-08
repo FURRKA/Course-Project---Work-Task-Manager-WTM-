@@ -1,0 +1,43 @@
+﻿@model ProjectDTO
+
+@{
+    ViewData["Title"] = "Создание проекта";
+    var allTags = ViewBag.Tags as List<TagDTO>; 
+}
+
+<h2>Создание проекта</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label">Название проекта</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3 dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Теги
+        </button>
+        <ul class="dropdown-menu p-3" style="max-height: 200px; overflow-y: auto;">
+            @if (allTags != null)
+            {
+                foreach (var tag in allTags)
+                {
+                    <li>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="SelectedTagIds" value="@tag.Id" id="tag_@tag.Id" />
+                            <label class="form-check-label" for="tag_@tag.Id">@tag.Name</label>
+                        </div>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Создать</button>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Отмена</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

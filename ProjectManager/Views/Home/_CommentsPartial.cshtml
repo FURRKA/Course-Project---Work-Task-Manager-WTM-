@@ -1,0 +1,11 @@
+﻿@model IEnumerable<CommentDTO>
+
+<div class="mt-2">
+    @foreach (var comment in Model)
+    {
+        <div class="border rounded p-2 mb-2 bg-light">
+            <strong>@comment.User.Name:</strong>
+            <div>@comment.Description</div>
+        </div>
+    }
+</div>

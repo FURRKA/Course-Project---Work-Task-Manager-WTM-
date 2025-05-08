@@ -1,4 +1,7 @@
-﻿using DAL.Entities;
+﻿using AutoMapper;
+using BLL.DTO;
+using BLL.Interfaces;
+using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Models;
@@ -9,10 +12,15 @@ namespace ProjectManager.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        private readonly IService<Company, CompanyDTO> _companyService;
+        private readonly IMapper _mapper;
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IService<Company, CompanyDTO> companyService,
+            IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _companyService = companyService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -26,7 +34,7 @@ namespace ProjectManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.Email, Email = model.Email, Name = model.Name};
+                var user = new User { UserName = model.Email, Email = model.Email, Name = model.Name, Company = new Company(model.Name)};
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
@@ -47,7 +55,7 @@ namespace ProjectManager.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            _signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
 
