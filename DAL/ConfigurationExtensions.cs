@@ -13,6 +13,7 @@ namespace DAL
         {
             service.AddTransient<IRepository<User>, UserRepository>();
             service.AddTransient<IRepository<Comment>, CommentRepository>();
+            service.AddTransient<IRepository<Company>, CompanyRepository>();
             service.AddTransient<IRepository<Tag>, TagRepository>();
             service.AddTransient<IRepository<WorkTask>, TaskRepository>();
             service.AddTransient<IRepository<Project>, ProjectRepository>();

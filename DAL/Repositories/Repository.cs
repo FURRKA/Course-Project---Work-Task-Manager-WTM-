@@ -35,7 +35,7 @@ namespace DAL.Repositories
 
         public T? Find(Func<T, bool> predicate)
         {
-            return _dbSet.Find(predicate);
+            return _dbSet.FirstOrDefault(predicate);
         }
 
         public IEnumerable<T> FindAll(Func<T, bool> predicate)
