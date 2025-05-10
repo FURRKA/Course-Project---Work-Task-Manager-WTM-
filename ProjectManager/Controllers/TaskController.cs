@@ -1,4 +1,5 @@
-﻿using BLL.DTO;
+﻿using BLL;
+using BLL.DTO;
 using BLL.Interfaces;
 using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -9,13 +10,13 @@ namespace ProjectManager.Controllers
 {
     public class TaskController : Controller
     {
-        private readonly IService<WorkTask, TaskDTO> _taskService;
+        private readonly IService<DAL.Entities.Task, TaskDTO> _taskService;
         private readonly IService<Project, ProjectDTO> _projectService;
         private readonly UserManager<User> _userManager;
         private static int currentId = 1;
         private static ProjectDTO project;
 
-        public TaskController(IService<WorkTask, TaskDTO> taskService, IService<Project, ProjectDTO> projectService, UserManager<User> user)
+        public TaskController(IService<DAL.Entities.Task, TaskDTO> taskService, IService<Project, ProjectDTO> projectService, UserManager<User> user)
         {
             _taskService = taskService;
             _projectService = projectService;
@@ -53,12 +54,15 @@ namespace ProjectManager.Controllers
             task.Autor = user.Name;
 
             if (!ModelState.IsValid)
+            {
+                ModelState.Log();
                 return View(task);
+            }
 
-            project.Tasks.Add(task);
-            task.
+            task.ProjectId = currentId; 
 
             _taskService.Create(task);
+            project.Tasks.Add(task);
             _projectService.Update(project.Id);
 
             return RedirectToAction($"TaskList/{project.Id}", "Task");

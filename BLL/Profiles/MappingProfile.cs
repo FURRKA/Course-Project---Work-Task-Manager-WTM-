@@ -10,7 +10,7 @@ namespace BLL.Profiles
         {
             CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<Project, ProjectDTO>().ReverseMap();
-            CreateMap<WorkTask, TaskDTO>().ReverseMap();
+            CreateMap<DAL.Entities.Task, TaskDTO>().ReverseMap();
             CreateMap<Comment, CommentDTO>().ReverseMap();
             CreateMap<Tag, TagDTO>().ReverseMap();
             CreateMap<Company,CompanyDTO>().ReverseMap();

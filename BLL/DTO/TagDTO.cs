@@ -6,5 +6,7 @@ namespace BLL.DTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
+
+        public TaskDTO Task { get; set; }
     }
 }

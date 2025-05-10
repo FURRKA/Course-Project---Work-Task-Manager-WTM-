@@ -6,11 +6,8 @@ namespace DAL.Entities
     {        
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<User> Users { get; set; } = new List<User>();
-        public Company() { }
-        public Company( string name)
-        {
-            Name = name;
-        }
+
+        public virtual ICollection<User> Users { get; set; } = new List<User>();
+        public virtual ICollection<Project> Projects { get; set; } = new List<Project>();
     }
 }

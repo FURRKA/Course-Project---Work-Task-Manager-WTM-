@@ -1,10 +1,8 @@
 ﻿using DAL.DBContext;
-using DAL.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
-    internal class TaskRepository : Repository<WorkTask>
+    internal class TaskRepository : Repository<Entities.Task>
     {
         public TaskRepository(ApplicationDBContext context) : base(context)
         {

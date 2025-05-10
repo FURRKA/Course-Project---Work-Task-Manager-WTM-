@@ -15,9 +15,9 @@ namespace DAL
             service.AddTransient<IRepository<Comment>, CommentRepository>();
             service.AddTransient<IRepository<Company>, CompanyRepository>();
             service.AddTransient<IRepository<Tag>, TagRepository>();
-            service.AddTransient<IRepository<WorkTask>, TaskRepository>();
+            service.AddTransient<IRepository<Entities.Task>, TaskRepository>();
             service.AddTransient<IRepository<Project>, ProjectRepository>();
-            service.AddDbContext<ApplicationDBContext>(options => options.UseNpgsql(connectionString));
+            service.AddDbContext<ApplicationDBContext>(options => options.UseLazyLoadingProxies().UseNpgsql(connectionString));
             service.AddTransient<IUnitOfWork, UnitOfWork>();
         }
     }

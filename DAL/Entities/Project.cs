@@ -6,16 +6,11 @@ namespace DAL.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public ICollection<User>? Users { get; set; } = new List<User>();
+        public string Description { get; set; }
+
+        public virtual ICollection<Task>? Tasks { get; set; } = new List<Task>();
         public int CompanyId { get; set; }
-        public Company Company { get; set; }
-        public ICollection<WorkTask>? Tasks { get; set; } = new List<WorkTask>();
-        public ICollection<Tag>? Tags { get; set; } = new List<Tag>();
-        public Project() { }
-        public Project(int id, string title)
-        {
-            Id = id;
-            Title = title;
-        }
+        public virtual Company Company { get; set; }
+
     }
 }

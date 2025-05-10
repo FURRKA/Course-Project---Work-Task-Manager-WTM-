@@ -6,15 +6,8 @@ namespace DAL.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-
-        public ICollection<Project>? Projects { get; set; } = new List<Project>();
-        public ICollection<WorkTask>? Tasks { get; set; } = new List<WorkTask>();
-        public Tag() { }
-
-        public Tag (int id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
+        
+        public int TaskId { get; set; }
+        public virtual Task Task { get; set; }
     }
 }

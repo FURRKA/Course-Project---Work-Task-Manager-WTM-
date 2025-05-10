@@ -1,11 +1,8 @@
 using BLL;
 using DAL.DBContext;
 using DAL.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using DAL.Interfaces;
-using BLL.Interfaces;
-using BLL.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectManager
 {
@@ -19,7 +16,7 @@ namespace ProjectManager
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.ConfigureBLL(connectionString);
 
-            builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseNpgsql(connectionString));
+            builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseLazyLoadingProxies().UseNpgsql(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
@@ -35,6 +32,13 @@ namespace ProjectManager
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
+
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             var app = builder.Build();
 
@@ -60,7 +64,7 @@ namespace ProjectManager
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Project}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
             app.Run();

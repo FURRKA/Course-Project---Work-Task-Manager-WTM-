@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250507215234_Initial")]
+    [Migration("20250509150124_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,21 @@ namespace DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("CompanyUser", b =>
+                {
+                    b.Property<int>("CompanysId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CompanysId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("CompanyUser");
+                });
 
             modelBuilder.Entity("DAL.Entities.Comment", b =>
                 {
@@ -37,17 +52,17 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("TaskId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("WorkTaskId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("TaskId");
 
-                    b.HasIndex("WorkTaskId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -80,6 +95,10 @@ namespace DAL.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -103,9 +122,55 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("TaskId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("TaskId");
+
                     b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Task", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Autor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("DAL.Entities.User", b =>
@@ -117,9 +182,6 @@ namespace DAL.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("CompanyId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -172,8 +234,6 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -182,37 +242,6 @@ namespace DAL.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("DAL.Entities.WorkTask", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Autor")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -347,92 +376,32 @@ namespace DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectTag", b =>
+            modelBuilder.Entity("CompanyUser", b =>
                 {
-                    b.Property<int>("ProjectsId")
-                        .HasColumnType("integer");
+                    b.HasOne("DAL.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanysId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("TagsId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ProjectsId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("ProjectTag");
-                });
-
-            modelBuilder.Entity("ProjectUser", b =>
-                {
-                    b.Property<int>("ProjectsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ProjectsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("ProjectUser");
-                });
-
-            modelBuilder.Entity("ProjectWorkTask", b =>
-                {
-                    b.Property<int>("ProjectsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TasksId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ProjectsId", "TasksId");
-
-                    b.HasIndex("TasksId");
-
-                    b.ToTable("ProjectWorkTask");
-                });
-
-            modelBuilder.Entity("TagWorkTask", b =>
-                {
-                    b.Property<int>("TagsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TasksId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("TagsId", "TasksId");
-
-                    b.HasIndex("TasksId");
-
-                    b.ToTable("TagWorkTask");
-                });
-
-            modelBuilder.Entity("UserWorkTask", b =>
-                {
-                    b.Property<int>("TasksId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("TasksId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("UserWorkTask");
+                    b.HasOne("DAL.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DAL.Entities.Comment", b =>
                 {
-                    b.HasOne("DAL.Entities.User", "User")
+                    b.HasOne("DAL.Entities.Task", "Task")
                         .WithMany("Comments")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DAL.Entities.WorkTask", "Task")
-                        .WithMany("Comments")
-                        .HasForeignKey("WorkTaskId")
+                    b.HasOne("DAL.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -444,7 +413,7 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Project", b =>
                 {
                     b.HasOne("DAL.Entities.Company", "Company")
-                        .WithMany()
+                        .WithMany("Projects")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -452,13 +421,32 @@ namespace DAL.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("DAL.Entities.User", b =>
+            modelBuilder.Entity("DAL.Entities.Tag", b =>
                 {
-                    b.HasOne("DAL.Entities.Company", "Company")
-                        .WithMany("Users")
-                        .HasForeignKey("CompanyId");
+                    b.HasOne("DAL.Entities.Task", "Task")
+                        .WithMany("Tags")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Company");
+                    b.Navigation("Task");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Task", b =>
+                {
+                    b.HasOne("DAL.Entities.Project", "Project")
+                        .WithMany("Tasks")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Entities.User", "User")
+                        .WithMany("Tasks")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -512,94 +500,26 @@ namespace DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectTag", b =>
-                {
-                    b.HasOne("DAL.Entities.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ProjectUser", b =>
-                {
-                    b.HasOne("DAL.Entities.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ProjectWorkTask", b =>
-                {
-                    b.HasOne("DAL.Entities.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.WorkTask", null)
-                        .WithMany()
-                        .HasForeignKey("TasksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("TagWorkTask", b =>
-                {
-                    b.HasOne("DAL.Entities.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.WorkTask", null)
-                        .WithMany()
-                        .HasForeignKey("TasksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("UserWorkTask", b =>
-                {
-                    b.HasOne("DAL.Entities.WorkTask", null)
-                        .WithMany()
-                        .HasForeignKey("TasksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DAL.Entities.Company", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("Projects");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Project", b =>
+                {
+                    b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Task", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("DAL.Entities.User", b =>
                 {
-                    b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("DAL.Entities.WorkTask", b =>
-                {
-                    b.Navigation("Comments");
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

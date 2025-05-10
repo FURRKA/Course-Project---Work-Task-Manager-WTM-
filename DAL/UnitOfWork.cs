@@ -10,11 +10,11 @@ namespace DAL
         public IRepository<User> Users { get; }
         public IRepository<Comment> Comments { get; }
         public IRepository<Tag> Tags { get; }
-        public IRepository<WorkTask> Tasks { get; }
+        public IRepository<Entities.Task> Tasks { get; }
         public IRepository<Project> Projects { get; }
 
         public UnitOfWork(ApplicationDBContext context, IRepository<User> users, IRepository<Comment> comments,
-            IRepository<Tag> tags, IRepository<WorkTask> tasks, IRepository<Project> projects)
+            IRepository<Tag> tags, IRepository<Entities.Task> tasks, IRepository<Project> projects)
         {
             _dbContext = context;
             Users = users;

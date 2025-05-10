@@ -34,7 +34,7 @@ namespace ProjectManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.Email, Email = model.Email, Name = model.Name, Company = new Company(model.Name)};
+                var user = new User { UserName = model.Email, Email = model.Email, Name = model.Name};
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)

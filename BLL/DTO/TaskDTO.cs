@@ -17,8 +17,13 @@ namespace BLL.DTO
 
         [ValidateNever]
         public string Autor { get; set; }
-        public DateTime Date { get; set; }
-        public Status Status { get; set; }
+        public DateTime Date { get; set; } = DateTime.UtcNow;
+        public Status Status { get; set; } = Status.Waiting;
+
+        [ValidateNever]
+        public int ProjectId { get; set; }
+        public UserDTO? User { get; set; }
+
         public List<TagDTO>? Tags { get; set; }
         public List<CommentDTO>? Comments {  get; set; }
     }

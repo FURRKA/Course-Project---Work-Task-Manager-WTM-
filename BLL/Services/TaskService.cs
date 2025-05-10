@@ -6,9 +6,9 @@ using DAL.Interfaces;
 
 namespace BLL.Services
 {
-    internal class TaskService : Service<WorkTask, TaskDTO>, ITaskService
+    internal class TaskService : Service<DAL.Entities.Task, TaskDTO>, ITaskService
     {
-        public TaskService(IRepository<WorkTask> repository, IMapper mapper) : base(repository, mapper)
+        public TaskService(IRepository<DAL.Entities.Task> repository, IMapper mapper) : base(repository, mapper)
         {
         }
     }

@@ -8,16 +8,9 @@ namespace DAL.Entities
         public string Description { get; set; }
 
         public int UserId { get; set; }
-        public User User { get; set; }
+        public virtual User User { get; set; }
 
-        public int WorkTaskId { get; set; }
-        public WorkTask Task { get; set; }
-
-        public Comment() { }
-        public Comment(int id, string description)
-        {
-            Id = id;
-            Description = description;
-        }
+        public int TaskId { get; set; }
+        public virtual Task Task { get; set; }
     }
 }

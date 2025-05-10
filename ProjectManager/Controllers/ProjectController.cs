@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using BLL;
 using BLL.DTO;
 using BLL.Interfaces;
 using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace ProjectManager.Controllers
 {
@@ -24,9 +24,12 @@ namespace ProjectManager.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var projects = _projectService.GetAll();
+            var user = await _userManager.GetUserAsync(User);
+
+            var projects = _projectService.GetByCriteria(p => p.CompanyId == user.CompanyId);
+            //_projectService.GetByCriteria(p => user.Companys.Any(c => c.Projects.Select(po => po.Id).Contains(p.Id)));
             return View(projects);
         }
 
@@ -38,7 +41,7 @@ namespace ProjectManager.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
             var tags = _tagService.GetAll();
             ViewBag.Tags = tags;
@@ -48,16 +51,16 @@ namespace ProjectManager.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProjectDTO project)
         {
+            project.Description = " 123";
+            var user = await _userManager.GetUserAsync(User);
             if (!ModelState.IsValid)
             {
+                ModelState.Log();
+
                 ViewBag.Tags = _tagService.GetAll();
                 return View(project);
             }
 
-            var user = await _userManager.GetUserAsync(User);
-
-            project.CompanyId = (int)user.CompanyId;
-            project.Company = _mapper.Map<CompanyDTO>(user.Company);
             _projectService.Create(project);
 
             return RedirectToAction($"TaskList/{project.Id}", "Task");

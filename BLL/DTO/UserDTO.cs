@@ -2,11 +2,11 @@
 
 namespace BLL.DTO
 {
-    public class UserDTO
+    public class UserDTO : IDTO
     {
+        public int Id { get; set; }
         public string Name { get; set; }
-        public string Role { get; set; }
-        public List<ProjectDTO> Projects { get; set; }
-        public List<TaskDTO> Tasks { get; set; }
+        public CompanyDTO? Company { get; set; }
+        public List<TaskDTO>? Tasks { get; set; }
     }
 }
