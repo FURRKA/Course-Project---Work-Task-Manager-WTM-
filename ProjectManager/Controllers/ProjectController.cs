@@ -51,8 +51,10 @@ namespace ProjectManager.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProjectDTO project)
         {
-            project.Description = " 123";
             var user = await _userManager.GetUserAsync(User);
+            project.Description = " 123";
+            project.CompanyId = (int)user.CompanyId;
+
             if (!ModelState.IsValid)
             {
                 ModelState.Log();
@@ -63,7 +65,7 @@ namespace ProjectManager.Controllers
 
             _projectService.Create(project);
 
-            return RedirectToAction($"TaskList/{project.Id}", "Task");
+            return RedirectToAction("Index");
         }
     }
 }

@@ -20,7 +20,6 @@ namespace BLL
             service.AddTransient<IService<DAL.Entities.Task, TaskDTO>, TaskService>(); 
             service.AddTransient<IService<Company, CompanyDTO>, CompanyService>(); 
             service.AddTransient<IService<Tag, TagDTO>, TagService>(); 
-            service.AddTransient<ICompanyService, CompanyService>();
         }
 
         public static void Log(this ModelStateDictionary model)

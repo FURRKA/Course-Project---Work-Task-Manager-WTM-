@@ -4,7 +4,6 @@ namespace DAL.Interfaces
 {
     public interface IUnitOfWork
     {
-        IRepository<User> Users {  get; }
         IRepository<Comment> Comments { get; }
         IRepository<Tag> Tags { get; }
         IRepository<Entities.Task> Tasks { get; }

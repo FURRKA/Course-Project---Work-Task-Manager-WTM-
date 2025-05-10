@@ -5,7 +5,7 @@ namespace BLL.Interfaces
     public interface IService<TEntity, TDTO>
     {
         public void Create(TDTO item);
-        public void Update(int id);
+        public void Update(TDTO item);
         public void Delete(int id);
         public TDTO? GetById(int id);
         public TDTO? Find(Func<TEntity, bool> predicate);

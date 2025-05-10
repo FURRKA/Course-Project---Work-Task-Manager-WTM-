@@ -6,7 +6,7 @@ namespace BLL.Services
 {
     public abstract class Service<TEntity, TDTO> : IService<TEntity, TDTO>
         where TDTO : class, new() 
-        where TEntity : class, new()
+        where TEntity : class, IEntity, new()
     {
         private readonly IRepository<TEntity> repository;
         private readonly IMapper mapper;
@@ -48,9 +48,9 @@ namespace BLL.Services
             return mapper.Map<TDTO>(repository.GetById(id));
         }
 
-        public void Update(int id)
+        public void Update(TDTO item)
         {
-            repository.Update(repository.GetById(id));
+            repository.Update(mapper.Map<TEntity>(item));
         }
     }
 }

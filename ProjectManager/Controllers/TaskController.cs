@@ -1,4 +1,5 @@
-﻿using BLL;
+﻿using AutoMapper;
+using BLL;
 using BLL.DTO;
 using BLL.Interfaces;
 using DAL.Entities;
@@ -13,14 +14,16 @@ namespace ProjectManager.Controllers
         private readonly IService<DAL.Entities.Task, TaskDTO> _taskService;
         private readonly IService<Project, ProjectDTO> _projectService;
         private readonly UserManager<User> _userManager;
+        private readonly IMapper _mapper;
         private static int currentId = 1;
         private static ProjectDTO project;
 
-        public TaskController(IService<DAL.Entities.Task, TaskDTO> taskService, IService<Project, ProjectDTO> projectService, UserManager<User> user)
+        public TaskController(IService<DAL.Entities.Task, TaskDTO> taskService, IService<Project, ProjectDTO> projectService, UserManager<User> user, IMapper mapper)
         {
             _taskService = taskService;
             _projectService = projectService;
             _userManager = user;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -30,7 +33,7 @@ namespace ProjectManager.Controllers
             if (project == null)
                 return NotFound();
 
-            currentId = projectId; 
+            currentId = projectId;
 
             var viewModel = new DashboardViewModel
             {
@@ -39,6 +42,13 @@ namespace ProjectManager.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MyTasks()
+        {
+
+            return View();
         }
 
         [HttpGet]
@@ -63,9 +73,22 @@ namespace ProjectManager.Controllers
 
             _taskService.Create(task);
             project.Tasks.Add(task);
-            _projectService.Update(project.Id);
+            _projectService.Update(project);
 
-            return RedirectToAction($"TaskList/{project.Id}", "Task");
+            return RedirectToAction("TaskList", "Task", new { projectId = currentId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(int taskId)
+        {
+            var task = _taskService.GetById(taskId);
+            var user = await _userManager.GetUserAsync(User);
+
+            task.UserId = user.Id;
+            task.Status = DAL.Status.InProcess;
+            _taskService.Update(task);
+
+            return RedirectToAction("TaskList", "Task", new { projectId = currentId });
         }
     }
 }

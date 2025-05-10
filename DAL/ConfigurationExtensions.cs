@@ -11,7 +11,7 @@ namespace DAL
     {
         public static void ConfigreDAL(this IServiceCollection service, string connectionString)
         {
-            service.AddTransient<IRepository<User>, UserRepository>();
+            //service.AddTransient<IRepository<User>, UserRepository>();
             service.AddTransient<IRepository<Comment>, CommentRepository>();
             service.AddTransient<IRepository<Company>, CompanyRepository>();
             service.AddTransient<IRepository<Tag>, TagRepository>();

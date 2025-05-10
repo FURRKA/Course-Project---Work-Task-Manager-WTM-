@@ -49,5 +49,15 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <div id="taskAddedToast" class="toast align-items-center text-bg-success border-0 position-fixed bottom-0 end-0 m-3 shadow-lg"
+         role="alert" aria-live="assertive" aria-atomic="true" style="width: 450px; font-size: 1.3rem; padding: 20px;">
+        <div class="d-flex">
+            <div class="toast-body fw-bold">
+                ✅ Задача успешно добавлена!
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
 </body>
 </html>

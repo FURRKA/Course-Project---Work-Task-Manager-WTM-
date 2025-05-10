@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
-    internal abstract class Repository<T> : IRepository<T> where T : class, new()
+    internal abstract class Repository<T> : IRepository<T> where T : class, IEntity, new()
     {
         private DbSet<T> _dbSet;
         private DbContext _context;
@@ -50,7 +50,7 @@ namespace DAL.Repositories
 
         public T? GetById(int id)
         {
-            return _dbSet.Find(id);
+            return _dbSet.AsNoTracking().FirstOrDefault(t => t.Id == id);
         }
     }
 }

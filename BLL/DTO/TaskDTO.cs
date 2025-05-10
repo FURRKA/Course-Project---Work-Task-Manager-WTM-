@@ -22,7 +22,7 @@ namespace BLL.DTO
 
         [ValidateNever]
         public int ProjectId { get; set; }
-        public UserDTO? User { get; set; }
+        public int? UserId { get; set; }
 
         public List<TagDTO>? Tags { get; set; }
         public List<CommentDTO>? Comments {  get; set; }
