@@ -60,7 +60,7 @@ else
             <!-- Комментарии -->
             <div class="col-md-4" id="comments-container">
                 <h4>Комментарии</h4>
-                <div id="comments-content">
+                <div id="comments-content" style="max-height: 65vh; overflow-y: auto; border: 1px solid #ddd; padding: 10px; background-color: #f8f9fa;">
                     <p class="text-muted">Выберите задачу для отображения комментариев.</p>
                 </div>
 
@@ -84,7 +84,7 @@ else
         }
 
         function showComments(taskId) {
-            fetch(`/Home/GetComments/${taskId}`)
+            fetch(`/Task/GetComments/${taskId}`)
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById('comments-content').innerHTML = html;
@@ -98,7 +98,7 @@ else
             const commentText = document.getElementById('newCommentText').value.trim();
             if (!commentText) return;
 
-            fetch(`/Home/AddComment`, {
+            fetch(`/Task/AddComment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

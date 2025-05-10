@@ -4,7 +4,7 @@
     @foreach (var comment in Model)
     {
         <div class="border rounded p-2 mb-2 bg-light">
-            <strong>@comment.User.Name:</strong>
+            <strong>@comment.User.Name (@comment.Created.ToShortDateString() @comment.Created.ToShortTimeString()):</strong>
             <div>@comment.Description</div>
         </div>
     }

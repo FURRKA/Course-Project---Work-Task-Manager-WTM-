@@ -2,6 +2,7 @@
 using BLL;
 using BLL.DTO;
 using BLL.Interfaces;
+using DAL;
 using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,16 +15,19 @@ namespace ProjectManager.Controllers
         private readonly IService<DAL.Entities.Task, TaskDTO> _taskService;
         private readonly IService<Project, ProjectDTO> _projectService;
         private readonly UserManager<User> _userManager;
+        private readonly IService<Comment,  CommentDTO> _commentService;
         private readonly IMapper _mapper;
         private static int currentId = 1;
         private static ProjectDTO project;
 
-        public TaskController(IService<DAL.Entities.Task, TaskDTO> taskService, IService<Project, ProjectDTO> projectService, UserManager<User> user, IMapper mapper)
+        public TaskController(IService<DAL.Entities.Task, TaskDTO> taskService, IService<Project, ProjectDTO> projectService,
+            IService<Comment, CommentDTO> commentService, UserManager<User> user, IMapper mapper)
         {
             _taskService = taskService;
             _projectService = projectService;
             _userManager = user;
             _mapper = mapper;
+            _commentService = commentService;
         }
 
         [HttpGet]
@@ -47,8 +51,10 @@ namespace ProjectManager.Controllers
         [HttpGet]
         public async Task<IActionResult> MyTasks()
         {
-
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            var id = user.Id;
+            var tasks = _taskService.GetByCriteria(t => t.UserId == id && t.Project.Id == currentId);
+            return View(tasks);
         }
 
         [HttpGet]
@@ -69,7 +75,7 @@ namespace ProjectManager.Controllers
                 return View(task);
             }
 
-            task.ProjectId = currentId; 
+            task.ProjectId = currentId;
 
             _taskService.Create(task);
             project.Tasks.Add(task);
@@ -89,6 +95,37 @@ namespace ProjectManager.Controllers
             _taskService.Update(task);
 
             return RedirectToAction("TaskList", "Task", new { projectId = currentId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetComments(int id)
+        {
+            var task = _taskService.GetById(id);
+            if (task == null) return NotFound();
+
+            return PartialView("_CommentsPartial", task.Comments);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddComment([FromBody] CommentRequestModel model)
+        {
+            var task = _taskService.GetById(model.TaskId);
+            var comments = task.Comments;
+            var user = await _userManager.GetUserAsync(User);
+
+            if (model == null) return NotFound();
+
+            var newComment = new CommentDTO()
+            {
+                Description = model.Description,
+                User = new UserDTO() { Name = user.Name},
+                TaskId = task.Id              
+            };
+
+            _commentService.Create(newComment);
+            comments.Add(newComment);
+
+            return PartialView("_CommentsPartial", comments);
         }
     }
 }
