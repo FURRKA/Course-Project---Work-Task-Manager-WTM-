@@ -15,56 +15,10 @@ namespace ProjectManager.Controllers
             _logger = logger;
         }
 
-        //public async Task<IActionResult> Index()
-        //{
-        //    var tasks = new List<TaskDTO>()
-        //    {
-        //        new TaskDTO
-        //        {
-        //            Id = 1,
-        //            Title = "Пример задачи",
-        //            Description = "Описание задачи",
-        //            Autor = "Автор",
-        //            Date = DateTime.Now,
-        //            Status = Status.InProcess,
-        //            Tags = new List<TagDTO>(),
-        //            Comments = new List<CommentDTO>
-        //            {
-        //                new CommentDTO
-        //                {
-        //                    Id = 1,
-        //                    Description = "Комментарий 1",
-        //                    User = new UserDTO { Name = "Пользователь A" }
-        //                }
-        //            }
-        //        },
-        //        new TaskDTO
-        //        {
-        //            Id = 2,
-        //            Title = "Пример задачи",
-        //            Description = "Описание задачи",
-        //            Autor = "Автор",
-        //            Date = DateTime.Now,
-        //            Status = Status.InProcess,
-        //            Tags = new List<TagDTO>(),
-        //            Comments = new List<CommentDTO>
-        //            {
-        //                new CommentDTO
-        //                {
-        //                    Id = 2,
-        //                    Description = "Комментарий 1",
-        //                    User = new UserDTO { Name = "Пользователь A" }
-        //                }
-        //            }
-        //        }
-        //    };
-        //    var model = new DashboardViewModel
-        //    {
-        //        Tasks = tasks,
-        //        Comments = new List<CommentDTO>(), // загружаются позже
-        //    };
-        //    return View(model);
-        //}
+        public async Task<IActionResult> Index()
+        {
+            return View();
+        }
 
         //public async Task<IActionResult> GetComments(int id)
         //{

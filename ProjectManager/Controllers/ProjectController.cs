@@ -52,7 +52,6 @@ namespace ProjectManager.Controllers
         public async Task<IActionResult> Create(ProjectDTO project)
         {
             var user = await _userManager.GetUserAsync(User);
-            project.Description = " 123";
             project.CompanyId = (int)user.CompanyId;
 
             if (!ModelState.IsValid)

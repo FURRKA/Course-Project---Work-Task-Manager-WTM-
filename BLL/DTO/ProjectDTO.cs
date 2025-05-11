@@ -11,8 +11,6 @@ namespace BLL.DTO
 
         [Required]
         public string Title { get; set; }
-
-        [ValidateNever]
         public string Description { get; set; }
         [ValidateNever]
         public int CompanyId { get; set; }

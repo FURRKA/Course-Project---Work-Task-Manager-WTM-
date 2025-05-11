@@ -52,8 +52,7 @@ namespace ProjectManager.Controllers
         public async Task<IActionResult> MyTasks()
         {
             var user = await _userManager.GetUserAsync(User);
-            var id = user.Id;
-            var tasks = _taskService.GetByCriteria(t => t.UserId == id && t.Project.Id == currentId);
+            var tasks = _taskService.GetAll().Where(t => t.UserId == user.Id).ToList();
             return View(tasks);
         }
 
@@ -78,8 +77,8 @@ namespace ProjectManager.Controllers
             task.ProjectId = currentId;
 
             _taskService.Create(task);
-            project.Tasks.Add(task);
-            _projectService.Update(project);
+            //project.Tasks.Add(task);
+            //_projectService.Update(project);
 
             return RedirectToAction("TaskList", "Task", new { projectId = currentId });
         }
@@ -95,6 +94,36 @@ namespace ProjectManager.Controllers
             _taskService.Update(task);
 
             return RedirectToAction("TaskList", "Task", new { projectId = currentId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int taskId)
+        {
+            _taskService.Delete(taskId);
+
+            return RedirectToAction("TaskList", "Task", new { projectId = currentId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Complete(int taskId)
+        {
+            var task = _taskService.GetById(taskId);
+            task.Status = Status.Done;
+            task.UserId = null;
+            _taskService.Update(task);
+
+            return RedirectToAction("MyTasks");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Unassign(int taskId)
+        {
+            var task = _taskService.GetById(taskId);
+            task.Status = Status.Waiting;
+            task.UserId = null;
+            _taskService.Update(task);
+
+            return RedirectToAction("MyTasks");
         }
 
         [HttpGet]

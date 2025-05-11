@@ -1,8 +1,11 @@
 ﻿@model List<ProjectDTO>
 @inject SignInManager<User> SignInManager
+@inject UserManager<User> userManager;
 
 @{
     ViewData["Title"] = "Проекты";
+    var user = await userManager.GetUserAsync(User);
+    var company = user.Company;
 }
 
 @if (!SignInManager.IsSignedIn(User))
@@ -11,14 +14,19 @@
         <h2 class="display-5 text-muted">Project Manager</h2>
     </div>
 }
+else if (company == null)
+{
+    <h1>У вас нет компании</h1>
+}
 else
 {
     <div class="container mt-4">
+        <h2 class="mb-4">Проекты группы @company.Name</h2>
+
         <div class="row">
-            <!-- Список проектов -->
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <h4>Список проектов</h4>
-                <div class="list-group" style="max-height: 1200px; overflow-y: auto;">
+                <div class="list-group" style="max-height: 65vh; overflow-y: auto; max-height: 65vh">
                     @if (Model.Count > 0)
                     {
                         foreach (var project in Model)
@@ -28,13 +36,20 @@ else
                                asp-action="TaskList"
                                asp-route-projectId="@project.Id">
                                 <strong>@project.Title</strong>
+                                <p>@project.Description</p>
                             </a>
                         }
                     }
                     else
                     {
-                        <h2 class="display-5 text-muted">Задач нет</h2>
+                        <p class="text-muted">У вас пока нет проектов.</p>
                     }
+                </div>
+
+                <div class="mt-4">
+                    <a asp-controller="Project" asp-action="Create" class="btn btn-primary">
+                        Создать новый проект
+                    </a>
                 </div>
             </div>
         </div>

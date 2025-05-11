@@ -1,119 +1,136 @@
 ﻿@model DashboardViewModel
 @inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 
 @{
-    ViewData["Title"] = "Dashboard";
+	ViewData["Title"] = "Список задач";
+	var user = await UserManager.GetUserAsync(User);
+
+	int id = user.Id;
+	string name = user.Name;
 }
 
 @if (!SignInManager.IsSignedIn(User))
 {
-    <div class="container text-center mt-5">
-        <h2 class="display-5 text-muted">Project Manager Dashboard</h2>
-    </div>
+	<div class="container text-center mt-5">
+		<h2 class="display-5 text-muted">Project Manager Dashboard</h2>
+	</div>
 }
 else
 {
-    <div class="container mt-4">
-        <div class="row">
-            <!-- Список задач с прокруткой -->
-            <div class="col-md-8">
-                <h4>Общий список задач</h4>
-                @if (Model.Tasks != null && Model.Tasks.Any())
-                {
-                    <div class="list-group" style="max-height: 600px; overflow-y: auto;">
-                        @foreach (var task in Model.Tasks)
-                        {
-                            var statusColor = task.Status switch
-                            {
-                                DAL.Status.Done => "bg-success",
-                                DAL.Status.InProcess => "bg-warning",
-                                DAL.Status.Waiting => "bg-danger",
-                                _ => "bg-secondary"
-                            };
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <div class="d-flex flex-column flex-grow-1" style="cursor: pointer;" onclick="showComments(@task.Id)">
-                                    <span class="fw-bold">@task.Title</span>
-                                    <span class="text-muted">@task.Description</span>
-                                    <span class="text-secondary small">Автор: @task.Autor</span>
-                                    <span class="text-muted">@task.Date.ToShortDateString() @task.Date.ToShortTimeString()</span>
-                                </div>
-                                <div class="d-flex align-items-center ms-3">
-                                    <span class="rounded-circle d-inline-block @statusColor me-2" style="width: 16px; height: 16px;"></span>
-                                    @if (task.UserId == null)
-                                    {
-                                        <form asp-controller="Task" asp-action="Add" method="post">
-                                            <input type="hidden" name="taskId" value="@task.Id" />
-                                            <button type="submit" class="btn btn-outline-primary btn-sm" onclick="showTaskAddedNotification()">Добавить</button>
-                                        </form>
-                                    }
-                                </div>
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <p class="text-muted">Задачи отсутствуют.</p>
-                }
-            </div>
+	<div class="container mt-4">
+		<div class="row">
+			<div class="col-md-8">
+				<h4>Общий список задач</h4>
+				@if (Model.Tasks != null && Model.Tasks.Any())
+				{
+					<div class="list-group" style="max-height: 600px; overflow-y: auto;">
+						@foreach (var task in Model.Tasks)
+						{
+							var statusColor = task.Status switch
+							{
+								DAL.Status.Done => "bg-success",
+								DAL.Status.InProcess => "bg-warning",
+								DAL.Status.Waiting => "bg-danger",
+								_ => "bg-secondary"
+							};
+							<div class="list-group-item d-flex justify-content-between align-items-center">
+								<div class="d-flex flex-column flex-grow-1" style="cursor: pointer;" onclick="showComments(@task.Id)">
+									<span class="fw-bold">@task.Title</span>
+									<span class="text-muted" style="max-width: 100%; overflow-wrap: break-word; word-wrap: break-word; white-space: normal; display: block;">
+										@task.Description
+									</span>
+									<span class="text-secondary small">Автор: @task.Autor</span>
+									<span class="text-muted">@task.Date.ToShortDateString() @task.Date.ToShortTimeString()</span>
+								</div>
+								<div class="d-flex gap-2">
+									<span class="rounded-circle d-inline-block @statusColor me-2" style="width: 16px; height: 16px;"></span>
+									@if (task.UserId == null && task.Status != DAL.Status.Done)
+									{
+										<form asp-controller="Task" asp-action="Add" method="post">
+											<input type="hidden" name="taskId" value="@task.Id" />
+											<button type="submit" class="btn btn-outline-primary btn-sm" onclick="showTaskAddedNotification()">Добавить</button>
+										</form>
+									}
 
-            <!-- Комментарии -->
-            <div class="col-md-4" id="comments-container">
-                <h4>Комментарии</h4>
-                <div id="comments-content" style="max-height: 65vh; overflow-y: auto; border: 1px solid #ddd; padding: 10px; background-color: #f8f9fa;">
-                    <p class="text-muted">Выберите задачу для отображения комментариев.</p>
-                </div>
+									@if (task.Autor == name && task.UserId != id && task.Status != DAL.Status.Done)
+									{
+										<form asp-controller="Task" asp-action="Delete" method="post">
+											<input type="hidden" name="taskId" value="@task.Id" />
+											<button type="submit" class="btn btn-danger btn-sm text-white" onclick="showTaskAddedNotification()">Удалить</button>
+										</form>
+									}
+								</div>
+							</div>
+						}
+					</div>
+				}
+				else
+				{
+					<p class="text-muted">Задачи отсутствуют.</p>
+				}
 
-                <!-- Добавление комментария -->
-                <div class="mt-3">
-                    <input type="hidden" id="selectedTaskId" />
-                    <div class="mb-2">
-                        <textarea class="form-control" id="newCommentText" rows="2" placeholder="Введите комментарий..."></textarea>
-                    </div>
-                    <button class="btn btn-success btn-sm" onclick="addComment()">Добавить комментарий</button>
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="mt-4">
+					<a asp-controller="Task" asp-action="Create" class="btn btn-primary">Создать задачу</a>
+				</div>
+			</div>
 
-    <script>
-            function showTaskAddedNotification() {
-            var toastEl = document.getElementById("taskAddedToast");
-            var toast = new bootstrap.Toast(toastEl);
-            toast.show();
-        }
+			<div class="col-md-4" id="comments-container">
+				<h4>Комментарии</h4>
+				<div id="comments-content" style="max-height: 65vh; overflow-y: auto; border: 1px solid #ddd; padding: 10px; background-color: #f8f9fa;">
+					<p class="text-muted">Выберите задачу для отображения комментариев.</p>
+				</div>
 
-        function showComments(taskId) {
-            fetch(`/Task/GetComments/${taskId}`)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('comments-content').innerHTML = html;
-                    document.getElementById('selectedTaskId').value = taskId;
-                })
-                .catch(err => console.error('Ошибка загрузки комментариев:', err));
-        }
+				<div class="mt-3">
+					<input type="hidden" id="selectedTaskId" />
+					<div class="mb-2">
+						<textarea class="form-control" id="newCommentText" rows="2" placeholder="Введите комментарий..."></textarea>
+					</div>
+					<button class="btn btn-success btn-sm" onclick="addComment()">Добавить комментарий</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-        function addComment() {
-            const taskId = document.getElementById('selectedTaskId').value;
-            const commentText = document.getElementById('newCommentText').value.trim();
-            if (!commentText) return;
 
-            fetch(`/Task/AddComment`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ taskId: parseInt(taskId), description: commentText })
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Ошибка при добавлении комментария');
-                return response.text();
-            })
-            .then(html => {
-                document.getElementById('comments-content').innerHTML = html;
-                document.getElementById('newCommentText').value = '';
-            })
-            .catch(err => console.error('Ошибка добавления комментария:', err));
-        }
-    </script>
+	<script>
+			function showTaskAddedNotification() {
+			var toastEl = document.getElementById("taskAddedToast");
+			var toast = new bootstrap.Toast(toastEl);
+			toast.show();
+		}
+
+		function showComments(taskId) {
+			fetch(`/Task/GetComments/${taskId}`)
+				.then(response => response.text())
+				.then(html => {
+					document.getElementById('comments-content').innerHTML = html;
+					document.getElementById('selectedTaskId').value = taskId;
+				})
+				.catch(err => console.error('Ошибка загрузки комментариев:', err));
+		}
+
+		function addComment() {
+			const taskId = document.getElementById('selectedTaskId').value;
+			const commentText = document.getElementById('newCommentText').value.trim();
+			if (!commentText) return;
+
+			fetch(`/Task/AddComment`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ taskId: parseInt(taskId), description: commentText })
+			})
+			.then(response => {
+				if (!response.ok) throw new Error('Ошибка при добавлении комментария');
+				return response.text();
+			})
+			.then(html => {
+				document.getElementById('comments-content').innerHTML = html;
+				document.getElementById('newCommentText').value = '';
+			})
+			.catch(err => console.error('Ошибка добавления комментария:', err));
+		}
+	</script>
 }
