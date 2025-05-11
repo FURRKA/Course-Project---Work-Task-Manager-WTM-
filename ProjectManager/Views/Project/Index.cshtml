@@ -16,7 +16,12 @@
 }
 else if (company == null)
 {
-    <h1>У вас нет компании</h1>
+    <h1>У вас нет группы</h1>
+    <p class="display-5 text-muted">На данный момент вы не состоите в группе.</p>
+    <p class="display-5 text-muted">Вы можете создать свою группу или подождать пока вас добавят в другую группу</p>
+    <a asp-controller="Company" asp-action="Create" class="btn btn-primary">
+        Создать группу
+    </a>
 }
 else
 {

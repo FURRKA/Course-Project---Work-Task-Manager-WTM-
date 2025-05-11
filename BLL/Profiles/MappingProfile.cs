@@ -14,6 +14,7 @@ namespace BLL.Profiles
             CreateMap<Comment, CommentDTO>().ReverseMap();
             CreateMap<Tag, TagDTO>().ReverseMap();
             CreateMap<Company,CompanyDTO>().ReverseMap();
+            CreateMap<StatisticTaskEntity, StatisticTaskDTO>().ReverseMap();
         }
     }
 }

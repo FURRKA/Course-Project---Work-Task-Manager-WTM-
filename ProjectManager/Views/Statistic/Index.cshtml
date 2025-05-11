@@ -1,0 +1,58 @@
+﻿@model List<StatisticTaskDTO>
+@{
+    ViewData["Title"] = "Статистика задач";
+}
+
+<div class="container mt-4">
+    <h2>Статистика выполненных задач</h2>
+
+    <form method="post" class="mb-4">
+        <div class="d-flex gap-3">
+            <div>
+                <label for="startDate" class="form-label">Начальная дата</label>
+                <input type="date" name="startDate" id="startDate" class="form-control" required />
+            </div>
+
+            <div>
+                <label for="endDate" class="form-label">Конечная дата</label>
+                <input type="date" name="endDate" id="endDate" class="form-control" required />
+            </div>
+
+            <div class="align-self-end">
+                <button type="submit" class="btn btn-primary">Показать статистику</button>
+            </div>
+        </div>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <canvas id="statChart"></canvas>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const ctx = document.getElementById('statChart').getContext('2d');
+            const chartData = {
+                labels: @Html.Raw(Json.Serialize(Model.Select(s => s.Date.ToShortDateString()))),
+                datasets: [{
+                    label: "Выполненные задачи",
+                    data: @Html.Raw(Json.Serialize(Model.Select(s => s.CompleteTask))),
+                    backgroundColor: "rgba(75, 192, 192, 0.5)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 2
+                }]
+            };
+
+            new Chart(ctx, {
+                type: "bar",
+                data: chartData,
+                options: {
+                    responsive: true
+                }
+            });
+        </script>
+    }
+    else
+    {
+        <p class="text-muted">Нет данных за выбранный период.</p>
+    }
+</div>

@@ -6,7 +6,6 @@ using DAL;
 using DAL.Entities;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 
 namespace BLL
 {
@@ -21,6 +20,7 @@ namespace BLL
             service.AddTransient<IService<Company, CompanyDTO>, CompanyService>(); 
             service.AddTransient<IService<Tag, TagDTO>, TagService>(); 
             service.AddTransient<IService<Comment, CommentDTO>, CommentService>();
+            service.AddTransient<IStatisticService, StatisticService>();
         }
 
         public static void Log(this ModelStateDictionary model)

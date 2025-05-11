@@ -7,7 +7,6 @@ using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Models;
-using System.Net.WebSockets;
 
 namespace ProjectManager.Controllers
 {
@@ -17,13 +16,15 @@ namespace ProjectManager.Controllers
         private readonly IService<Project, ProjectDTO> _projectService;
         private readonly UserManager<User> _userManager;
         private readonly IService<Comment,  CommentDTO> _commentService;
-        private readonly IService<Tag, TagDTO> _tagService; 
+        private readonly IService<Tag, TagDTO> _tagService;
+        private readonly IStatisticService _statistic;
         private readonly IMapper _mapper;
         private static int currentId = 1, companyId;
         private static ProjectDTO project;
 
         public TaskController(IService<DAL.Entities.Task, TaskDTO> taskService, IService<Project, ProjectDTO> projectService,
-            IService<Comment, CommentDTO> commentService, UserManager<User> user, IService<Tag, TagDTO> tagService, IMapper mapper)
+            IService<Comment, CommentDTO> commentService, UserManager<User> user, IService<Tag, TagDTO> tagService, 
+            IStatisticService statistic, IMapper mapper)
         {
             _taskService = taskService;
             _projectService = projectService;
@@ -31,6 +32,7 @@ namespace ProjectManager.Controllers
             _mapper = mapper;
             _commentService = commentService;
             _tagService = tagService;
+            _statistic = statistic;
         }
 
         [HttpGet]
@@ -90,10 +92,12 @@ namespace ProjectManager.Controllers
             task.ProjectId = currentId;
             _taskService.Create(task);            
 
-            var id = _taskService.Find(ta => ta.Title == task.Title && ta.ProjectId == currentId).Id;
-            var tags = _tagService.GetByCriteria(t => task.SelectedTagIds.Contains(t.Id));
-            tags.ForEach(t => t.TaskId = id);
-            tags.ForEach(_tagService.Update);
+            task.Tags = _tagService.GetByCriteria(t => task.SelectedTagIds.Contains(t.Id));
+
+            //var id = _taskService.Find(ta => ta.Title == task.Title && ta.ProjectId == currentId).Id;
+            //var tags = _tagService.GetByCriteria(t => task.SelectedTagIds.Contains(t.Id));
+            //tags.ForEach(t => t.TaskId = id);
+            //tags.ForEach(_tagService.Update);
 
             return RedirectToAction("TaskList", "Task", new { projectId = currentId });
         }
@@ -116,6 +120,7 @@ namespace ProjectManager.Controllers
         {
             _taskService.Delete(taskId);
 
+
             return RedirectToAction("TaskList", "Task", new { projectId = currentId });
         }
 
@@ -126,6 +131,7 @@ namespace ProjectManager.Controllers
             task.Status = Status.Done;
             task.UserId = null;
             _taskService.Update(task);
+            _statistic.AddDoneTask(companyId, currentId, DateTime.UtcNow.Date);
 
             return RedirectToAction("MyTasks");
         }
@@ -137,6 +143,7 @@ namespace ProjectManager.Controllers
             task.Status = Status.Waiting;
             task.UserId = null;
             _taskService.Update(task);
+
 
             return RedirectToAction("MyTasks");
         }
@@ -182,6 +189,12 @@ namespace ProjectManager.Controllers
         public async Task<IActionResult> Suggest()
         {
             return RedirectToAction("Create", "Tag", new { companyId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Statistic()
+        {
+            return RedirectToAction("Index", "Statistic", new { cId = companyId, pId = currentId });
         }
     }
 }

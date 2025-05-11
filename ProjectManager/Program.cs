@@ -48,12 +48,25 @@ namespace ProjectManager
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
                 var roles = new[] { "Admin", "User", "Guest" };
 
                 foreach (var role in roles)
                 {
                     if (!await roleManager.RoleExistsAsync(role))
                         await roleManager.CreateAsync(new IdentityRole<int>(role));
+                }
+
+                var userAdmin = await userManager.FindByEmailAsync("123@mail.com");
+                if (userAdmin != null && !await userManager.IsInRoleAsync(userAdmin, "Admin"))
+                {
+                    await userManager.AddToRoleAsync(userAdmin, "Admin");
+                }
+
+                var user = await userManager.FindByEmailAsync("alice@example.coms");
+                if (user != null && !await userManager.IsInRoleAsync(user, "User"))
+                {
+                    await userManager.AddToRoleAsync(user, "User");
                 }
             }
 
