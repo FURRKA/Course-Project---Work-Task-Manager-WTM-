@@ -65,7 +65,8 @@ namespace ProjectManager.Controllers
         [HttpGet]
         public async Task<IActionResult> DoneTasks()
         {
-            var tasks = _taskService.GetByCriteria(t => t.Status == Status.Done && t.ProjectId == currentId);
+            var user = await _userManager.GetUserAsync(User);
+            var tasks = _taskService.GetByCriteria(t => t.Status == Status.Done && t.ProjectId == currentId && t.UserId == user.Id);
             ViewBag.ProjectName = _projectService.GetById(currentId).Title;
             return View(tasks);
         }

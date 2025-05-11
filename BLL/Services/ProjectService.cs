@@ -6,7 +6,7 @@ using DAL.Interfaces;
 
 namespace BLL.Services
 {
-    internal class ProjectService : Service<Project, ProjectDTO>, IProjectService
+    internal class ProjectService : Service<Project, ProjectDTO>
     {
         public ProjectService(IRepository<Project> repository, IMapper mapper) : base(repository, mapper)
         {

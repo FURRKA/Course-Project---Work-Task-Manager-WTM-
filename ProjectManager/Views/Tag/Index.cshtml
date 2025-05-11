@@ -23,7 +23,7 @@
 						<span class="rounded-circle d-inline-block @statusColor" style="width: 16px; height: 16px;"></span>
 					</div>
 
-					<!-- Кнопка "Одобрить" для Админов и Модераторов -->
+
 					@if (!tag.IsApproved)
 					{
 						<form asp-controller="Tag" asp-action="Approve" method="post">
@@ -33,6 +33,7 @@
 					}
 				</div>
 			}
+			<a class="btn btn-primary" asp-action="Create" asp-controller="Tag">Создать тег</a>
 		}
 		else
 		{
