@@ -1,0 +1,43 @@
+﻿@model List<TagDTO>
+@using Microsoft.AspNetCore.Authorization
+
+@inject IAuthorizationService AuthorizationService
+
+@{
+	ViewData["Title"] = "Список тегов";
+}
+
+<div class="container mt-4">
+	<h2>Список тегов</h2>
+
+	<div class="list-group">
+		@if (Model.Count > 0)
+		{
+			@foreach (var tag in Model)
+			{
+				var statusColor = tag.IsApproved ? "bg-success" : "bg-danger";
+
+				<div class="list-group-item d-flex justify-content-between align-items-center">
+					<div class="d-flex align-items-center gap-3">
+						<span class="fw-bold">@tag.Name</span>
+						<span class="rounded-circle d-inline-block @statusColor" style="width: 16px; height: 16px;"></span>
+					</div>
+
+					<!-- Кнопка "Одобрить" для Админов и Модераторов -->
+					@if (!tag.IsApproved)
+					{
+						<form asp-controller="Tag" asp-action="Approve" method="post">
+							<input type="hidden" name="tagId" value="@tag.Id" />
+							<button type="submit" class="btn btn-outline-primary btn-sm">Одобрить</button>
+						</form>
+					}
+				</div>
+			}
+		}
+		else
+		{
+			<p>В текущем проекте отсутствуют теги</p>
+		}
+
+	</div>
+</div>

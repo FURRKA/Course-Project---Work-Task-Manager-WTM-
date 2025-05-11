@@ -12,8 +12,10 @@ namespace DAL.DBContext
         public DbSet<Project> Projects { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<StatisticTaskEntity> StatisticsTask { get; set; }
+        public DbSet<StatisticUserEntity> StatisticsUser { get; set; }
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
-        {}
+        { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

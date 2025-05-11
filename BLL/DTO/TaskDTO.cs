@@ -26,5 +26,7 @@ namespace BLL.DTO
 
         public List<TagDTO>? Tags { get; set; }
         public List<CommentDTO>? Comments {  get; set; }
+        public List<int> SelectedTagIds { get; set; } = new List<int>();
+
     }
 }

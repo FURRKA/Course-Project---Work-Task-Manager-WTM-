@@ -42,6 +42,10 @@ else
 									</span>
 									<span class="text-secondary small">Автор: @task.Autor</span>
 									<span class="text-muted">@task.Date.ToShortDateString() @task.Date.ToShortTimeString()</span>
+									@if (task.Tags.Count > 0)
+									{
+										<span class="text-muted">Tags:[@string.Join(", ", task.Tags.Select(t => t.Name))]</span>
+									}
 								</div>
 								<div class="d-flex gap-2">
 									<span class="rounded-circle d-inline-block @statusColor me-2" style="width: 16px; height: 16px;"></span>

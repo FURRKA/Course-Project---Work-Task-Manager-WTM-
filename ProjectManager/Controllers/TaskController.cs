@@ -7,6 +7,7 @@ using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Models;
+using System.Net.WebSockets;
 
 namespace ProjectManager.Controllers
 {
@@ -16,18 +17,20 @@ namespace ProjectManager.Controllers
         private readonly IService<Project, ProjectDTO> _projectService;
         private readonly UserManager<User> _userManager;
         private readonly IService<Comment,  CommentDTO> _commentService;
+        private readonly IService<Tag, TagDTO> _tagService; 
         private readonly IMapper _mapper;
-        private static int currentId = 1;
+        private static int currentId = 1, companyId;
         private static ProjectDTO project;
 
         public TaskController(IService<DAL.Entities.Task, TaskDTO> taskService, IService<Project, ProjectDTO> projectService,
-            IService<Comment, CommentDTO> commentService, UserManager<User> user, IMapper mapper)
+            IService<Comment, CommentDTO> commentService, UserManager<User> user, IService<Tag, TagDTO> tagService, IMapper mapper)
         {
             _taskService = taskService;
             _projectService = projectService;
             _userManager = user;
             _mapper = mapper;
             _commentService = commentService;
+            _tagService = tagService;
         }
 
         [HttpGet]
@@ -38,6 +41,7 @@ namespace ProjectManager.Controllers
                 return NotFound();
 
             currentId = projectId;
+            companyId = project.CompanyId;
 
             var viewModel = new DashboardViewModel
             {
@@ -67,6 +71,7 @@ namespace ProjectManager.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            ViewBag.Tags = _tagService.GetByCriteria(t => t.CompanyId == companyId && t.IsApproved);
             return View();
         }
 
@@ -83,8 +88,12 @@ namespace ProjectManager.Controllers
             }
 
             task.ProjectId = currentId;
+            _taskService.Create(task);            
 
-            _taskService.Create(task);
+            var id = _taskService.Find(ta => ta.Title == task.Title && ta.ProjectId == currentId).Id;
+            var tags = _tagService.GetByCriteria(t => task.SelectedTagIds.Contains(t.Id));
+            tags.ForEach(t => t.TaskId = id);
+            tags.ForEach(_tagService.Update);
 
             return RedirectToAction("TaskList", "Task", new { projectId = currentId });
         }
@@ -161,6 +170,18 @@ namespace ProjectManager.Controllers
             comments.Add(newComment);
 
             return PartialView("_CommentsPartial", comments);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Tags()
+        {
+            return RedirectToAction("Index", "Tag", new { companyId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Suggest()
+        {
+            return RedirectToAction("Create", "Tag", new { companyId });
         }
     }
 }
