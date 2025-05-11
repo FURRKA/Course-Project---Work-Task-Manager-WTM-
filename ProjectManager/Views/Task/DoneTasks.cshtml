@@ -1,0 +1,34 @@
+﻿@model List<TaskDTO>
+@{
+	ViewData["Title"] = "Завершённые задачи";
+}
+
+<div class="container mt-4">
+	<h2>Завершённые задачи проекта @ViewBag.ProjectName</h2>
+
+	@if (Model != null && Model.Any())
+	{
+		<div class="list-group">
+			@foreach (var task in Model)
+			{
+				var statusColor = task.Status switch
+				{
+					DAL.Status.Done => "bg-success",
+					DAL.Status.InProcess => "bg-warning",
+					DAL.Status.Waiting => "bg-danger",
+					_ => "bg-secondary"
+				};
+
+				<div class="list-group-item d-flex justify-content-between align-items-center">
+					<div class="d-flex flex-column flex-grow-1">
+						<span class="fw-bold">@task.Title</span>
+						<span class="text-muted">@task.Description</span>
+						<span class="text-secondary small">Автор: @task.Autor</span>
+						<span class="text-muted">@task.Date.ToShortDateString() @task.Date.ToShortTimeString()</span>
+					</div>
+					<span class="rounded-circle d-inline-block @statusColor me-2" style="width: 16px; height: 16px;"></span>
+				</div>
+			}
+		</div>
+	}
+</div>                    

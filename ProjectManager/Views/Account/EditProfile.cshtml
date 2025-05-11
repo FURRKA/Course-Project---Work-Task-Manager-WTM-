@@ -1,0 +1,51 @@
+﻿@model ProfileViewModel
+@{
+    ViewData["Title"] = "Редактирование профиля";
+}
+
+<div class="container mt-4">
+    <h2>Редактировать профиль</h2>
+
+    <form asp-action="EditProfile" method="post" onsubmit="return confirmCompanyDetach()">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Имя</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Пароль</label>
+            <input asp-for="Password" type="password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="IsCompanyAttached" id="companyCheck" />
+            <label class="form-check-label" for="companyCheck">Прикреплен к группе @Model.Company.Name</label>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary mt-3">Сохранить изменения</button>
+        <a asp-action="Profile" class="btn btn-secondary mt-3">Отмена</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        function confirmCompanyDetach() {
+            var checkBox = document.getElementById("companyCheck");
+            if (!checkBox.checked) {
+                return confirm("Вы уверены, что хотите отсоединиться от текущей группы?");
+            }
+            return true;
+        }
+    </script>
+}

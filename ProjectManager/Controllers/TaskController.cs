@@ -42,7 +42,7 @@ namespace ProjectManager.Controllers
             var viewModel = new DashboardViewModel
             {
                 ProjectTitle = project.Title,
-                Tasks = project.Tasks
+                Tasks = project.Tasks.Where(t => t.Status != Status.Done).OrderBy(t => t.Id).ToList()
             };
 
             return View(viewModel);
@@ -52,7 +52,15 @@ namespace ProjectManager.Controllers
         public async Task<IActionResult> MyTasks()
         {
             var user = await _userManager.GetUserAsync(User);
-            var tasks = _taskService.GetAll().Where(t => t.UserId == user.Id).ToList();
+            var tasks = _taskService.GetAll().Where(t => t.UserId == user.Id && t.ProjectId == currentId).ToList();
+            return View(tasks);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DoneTasks()
+        {
+            var tasks = _taskService.GetByCriteria(t => t.Status == Status.Done && t.ProjectId == currentId);
+            ViewBag.ProjectName = _projectService.GetById(currentId).Title;
             return View(tasks);
         }
 
@@ -77,8 +85,6 @@ namespace ProjectManager.Controllers
             task.ProjectId = currentId;
 
             _taskService.Create(task);
-            //project.Tasks.Add(task);
-            //_projectService.Update(project);
 
             return RedirectToAction("TaskList", "Task", new { projectId = currentId });
         }

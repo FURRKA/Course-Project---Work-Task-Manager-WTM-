@@ -53,7 +53,7 @@ else
 										</form>
 									}
 
-									@if (task.Autor == name && (task.UserId != id || task.Status != DAL.Status.Done))
+									@if ((task.Autor == name && task.Status != DAL.Status.Done) && (task.UserId != id || task.Status != DAL.Status.Done))
 									{
 										<form asp-controller="Task" asp-action="Delete" method="post">
 											<input type="hidden" name="taskId" value="@task.Id" />

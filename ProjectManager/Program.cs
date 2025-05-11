@@ -8,7 +8,7 @@ namespace ProjectManager
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async System.Threading.Tasks.Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +26,7 @@ namespace ProjectManager
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 4;
                 options.Password.RequireNonAlphanumeric = false;
+
             })
                 .AddEntityFrameworkStores<ApplicationDBContext>()
                 .AddDefaultTokenProviders();
@@ -40,7 +41,22 @@ namespace ProjectManager
                 options.Cookie.IsEssential = true;
             });
 
+            builder.Services.AddScoped<RoleManager<IdentityRole<int>>>();
+
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+                var roles = new[] { "Admin", "User", "Guest" };
+
+                foreach (var role in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(role))
+                        await roleManager.CreateAsync(new IdentityRole<int>(role));
+                }
+            }
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
