@@ -90,7 +90,7 @@ namespace ProjectManager.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             task.UserId = user.Id;
-            task.Status = DAL.Status.InProcess;
+            task.Status = Status.InProcess;
             _taskService.Update(task);
 
             return RedirectToAction("TaskList", "Task", new { projectId = currentId });

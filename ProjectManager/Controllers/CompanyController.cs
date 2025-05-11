@@ -42,13 +42,11 @@ namespace ProjectManager.Controllers
             }
 
             var user = await _userManager.GetUserAsync(User);
-            var userDTO = _mapper.Map<UserDTO>(user);
 
-            _companyService.Create(company);
             user.Company = _mapper.Map<Company>(company);
             await _userManager.UpdateAsync(user);
             
-            return RedirectToAction("Index");
+            return RedirectToAction("Project");
         }
     }
 }

@@ -12,5 +12,7 @@ namespace DAL.Entities
 
         public int TaskId { get; set; }
         public virtual Task Task { get; set; }
+
+        public DateTime Created { get; set; } = DateTime.UtcNow;
     }
 }
