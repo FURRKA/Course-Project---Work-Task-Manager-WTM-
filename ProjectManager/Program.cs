@@ -13,8 +13,10 @@ namespace ProjectManager
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            var connectionString = builder.Configuration.GetConnectionString("CONNECTION_STRING") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.ConfigureBLL(connectionString);
+
+            builder.WebHost.UseUrls("http://0.0.0.0:80");
 
             builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseLazyLoadingProxies().UseNpgsql(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
